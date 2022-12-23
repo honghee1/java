@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="mapper.MemberMapper">
+	<select id="login" parameterType="map" resultType="member">
+		select * from member where id like #{id} and passwd like #{passwd}
+	</select>
+	<select id="selectTopAge3" resultType="member"> <!-- 비교문을 사용할 때 <![CDATA][sql문]> -->
+	<![CDATA[ 
+		select m.* from (select * from member ORDER BY age desc) m where rownum <= 3
+	]]>
+	</select>
+	<select id="selectMemberDTO" parameterType="String" resultType="member">
+		select * from member where id like #{id}
+	</select>
+	<insert id="insertMemberDTO" parameterType="member">
+		insert into member values(#{id},#{passwd},#{name},#{age},#{gender},#{address})
+	</insert>
+	<update id="updateMemberDTO" parameterType="member">
+		update member set passwd = #{passwd}, name = #{name}, age = #{age}, 
+		gender = #{gender}, address = #{address} where id = #{id}
+	</update>
+	<delete id="deleteMemberDTO" parameterType="String">
+		delete from member where id = #{id}
+	</delete>
+	<select id="selectMemberList" resultType="member" parameterType="map">
+		select * from member
+		<choose>
+			<when test="kind == null">
+				
+			</when>
+			<when test="kind.equals('gender')">
+				where gender = #{search}
+			</when>
+			<when test="kind.equals('id')">
+				where id like '%' || #{search} || '%'
+			</when>
+			<when test="kind.equals('name')">
+				where name like '%' || #{search} || '%'
+			</when>
+			<when test="kind.equals('address')">
+				where address like '%' || #{search} || '%'
+			</when>
+			<otherwise></otherwise>
+		</choose>
+	</select>
+</mapper>
+
+
+
+
+
+
+
+
+
+
